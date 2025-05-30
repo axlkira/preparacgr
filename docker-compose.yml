@@ -43,8 +43,6 @@ services:
     container_name: preparacgr-nginx
     restart: unless-stopped
     tty: true
-    ports:
-      - "80:80"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - .:/var/www
