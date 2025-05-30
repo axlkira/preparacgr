@@ -2,7 +2,7 @@ version: '3.8'
 services:
   app:
     build:
-      context: ./src
+      context: .  # Cambiado de ./src a .
       dockerfile: Dockerfile
     image: preparacgr-app
     container_name: preparacgr-app
@@ -13,9 +13,9 @@ services:
       SERVICE_TAGS: dev
     working_dir: /var/www
     volumes:
-      - ./src:/var/www
-      - ./src/vendor:/var/www/vendor
-      - ./src/storage:/var/www/storage
+      - .:/var/www  # Cambiado de ./src:/var/www a .:/var/www
+      - ./vendor:/var/www/vendor
+      - ./storage:/var/www/storage
     networks:
       - preparacgr
     depends_on:
@@ -46,12 +46,9 @@ services:
       - "4443:443"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./src:/var/www
+      - .:/var/www  # Cambiado de ./src:/var/www a .:/var/www
     networks:
       - preparacgr
-    depends_on:
-      - app
-      - db
 networks:
   preparacgr:
     driver: bridge
