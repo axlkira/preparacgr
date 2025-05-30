@@ -20,8 +20,8 @@ services:
       - preparacgr
     depends_on:
       - db
-    ports:
-      - "9000:9000"
+    expose:
+      - "9000"
   db:
     image: mysql:8.0
     container_name: preparacgr-db
@@ -36,18 +36,6 @@ services:
       MYSQL_USER: preparacgr
     volumes:
       - dbdata:/var/lib/mysql
-    networks:
-      - preparacgr
-  nginx:
-    image: nginx:alpine
-    container_name: preparacgr-nginx
-    restart: unless-stopped
-    tty: true
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - .:/var/www
     networks:
       - preparacgr
 networks:
