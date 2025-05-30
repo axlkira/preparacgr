@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    image: preparacgr-app
+    container_name: preparacgr-app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    volumes:
+      - ./src:/var/www
+      - ./src/vendor:/var/www/vendor
+      - ./src/storage:/var/www/storage
+    networks:
+      - preparacgr
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0
+    container_name: preparacgr-db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: preparacgr
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_PASSWORD: secret
+      MYSQL_USER: preparacgr
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - preparacgr
+  nginx:
+    image: nginx:alpine
+    container_name: preparacgr-nginx
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8090:80"
+      - "4443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./src:/var/www
+    networks:
+      - preparacgr
+    depends_on:
+      - app
+      - db
+networks:
+  preparacgr:
+    driver: bridge
+volumes:
+  dbdata:
+    driver: local
